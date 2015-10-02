@@ -14,7 +14,7 @@
 /* If uSD is used, then include the uSD BSP header file.
    Replace 'stm32xxx' with your EVAL board name, ex: stm324x9i_eval_sd.h
    */
-#include "stm32xxx_eval_sd.h"
+#include <BSP/devboard/sd.h>
 
 /*---------------------------------------------------------------------------/
 / Functions and Buffer Configurations

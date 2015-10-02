@@ -1,11 +1,6 @@
-set(FATFS_DIR ${third_party_dir}/FATFS)
-
 file(GLOB src ${FATFS_DIR}/src/*.c)
 add_library(FATFS
     ${src}
     ${FATFS_DIR}/src/drivers/sd_diskio.c
 )
-target_include_directories(FATFS PRIVATE
-    ${FATFS_DIR}/src
-    ${FATFS_DIR}/src/drivers
-)
+target_compile_options(FATFS PRIVATE -Wno-unused-parameter) # There is a lot of unused variable warnings in this library

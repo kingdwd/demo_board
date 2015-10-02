@@ -1,5 +1,6 @@
 #include <stm32f4xx_hal.h>
 #include "BSP/devboard/devboard.h"
+#include "BSP/devboard/sd.h"
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Exceptions Handlers                         */
@@ -52,4 +53,18 @@ void EXTI15_10_IRQHandler(void) {
 	HAL_GPIO_EXTI_IRQHandler(BUTTON_PIN[BUTTON6]);
 	HAL_GPIO_EXTI_IRQHandler(BUTTON_PIN[BUTTON7]);
 	HAL_GPIO_EXTI_IRQHandler(BUTTON_PIN[BUTTON8]);
+}
+
+void DMA2_Stream3_IRQHandler(void) {
+	BSP_SD_DMA_Rx_IRQHandler();
+}
+
+
+void DMA2_Stream6_IRQHandler(void) {
+	BSP_SD_DMA_Tx_IRQHandler();
+}
+
+
+void SDIO_IRQHandler(void) {
+  BSP_SD_IRQHandler();
 }

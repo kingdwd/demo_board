@@ -1,4 +1,8 @@
 #include <stm32f4xx_hal.h>
+
+#include <ff_gen_drv.h>
+#include <sd_diskio.h>
+
 #include "BSP/devboard/devboard.h"
 
 #include <stdint.h>
@@ -58,6 +62,15 @@ void set_system_clock_168mhz(void) {
 	}
 }
 
+static int init_fatfs(FATFS* fs) {
+	char SDPath[4];
+
+	// SD_Driver is exported from sd_diskio.h
+	if (FATFS_LinkDriver(&SD_Driver, SDPath) != 0) return -1;
+	if (f_mount(fs, SDPath, 1) != FR_OK) return -1;
+	return 0;
+}
+
 int main(void) {
     HAL_Init();
     set_system_clock_168mhz();
@@ -85,11 +98,25 @@ int main(void) {
 		HAL_Delay(250);
 	}
 
+	FIL f;
+	FATFS fs;
+	bool fs_ready = false;
+	if (init_fatfs(&fs) == 0) {
+		FRESULT rc = f_open(&f, "STM32.TXT", FA_WRITE);
+		if (rc == FR_OK) fs_ready = true;
+	}
+
     while (1) {
 		for (uint8_t i = 0; i < 0xF+1; i++) {
 			for (uint8_t j = 0; j < 0xF+1; j++) {
 				seven_seg_disp_num(i, j);
 				HAL_Delay(100);
+
+				if(!fs_ready) {
+					BSP_LED_toggle(LED1);
+				} else {
+					f_printf(&f, "i=%x, j=%x\n", i, j);
+				}
 			}
 		}
 	}
