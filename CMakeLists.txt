@@ -15,4 +15,5 @@ add_definitions(-DHSE_VALUE=24000000 -DSTM32F407xx)
 
 set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
 
+add_subdirectory(third_party)
 add_subdirectory(src)
