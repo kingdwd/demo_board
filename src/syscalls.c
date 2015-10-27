@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #include "BSP/devboard/uart.h"
 
@@ -20,8 +21,13 @@ int _fstat(int file, struct stat *st) {
 }
 
 int _isatty(int file) {
-	UNUSED(file);
-	return 1;
+	switch(file) {
+		case 1: // stdio
+		case 2: // stderr
+			return 1;
+
+		default: return 0;
+	}
 }
 
 int _lseek(int file, int ptr, int dir) {
@@ -65,16 +71,18 @@ caddr_t _sbrk(int incr) {
 }
 
 int _write(int file, char *ptr, int len) {
-	// UNUSED(file);
+	if (isatty(file)) {
+		return BSP_UARTx_transmit((uint8_t*)ptr, len) == 0 ? len : 0;
+	}
 
-	for (int todo = 0; todo < len; todo++) {
+	int todo;
+	for (todo = 0; todo < len; todo++) {
 		const char c = *ptr++;
-		if (isatty(file) && c == '\n') BSP_UARTx_transmit((uint8_t*)&(char){'\r'}, 1);
+		if (c == '\n') BSP_UARTx_transmit((uint8_t*)&(char){'\r'}, 1);
 		if (BSP_UARTx_transmit((uint8_t*)&c, 1) != 0) break;
 	}
 
-	return len;
-	// return BSP_UARTx_transmit((uint8_t*)ptr, len) == 0 ? len : 0;
+	return todo;
 }
 
 void _exit (int exitcode) {
