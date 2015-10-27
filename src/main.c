@@ -110,10 +110,10 @@ int main(void) {
 	FIL f;
 	FATFS fs;
 	bool fs_ready = false;
-	// if (init_fatfs(&fs) == 0) {
-	// 	FRESULT rc = f_open(&f, "STM32.TXT", FA_WRITE);
-	// 	if (rc == FR_OK) fs_ready = true;
-	// }
+	if (init_fatfs(&fs) == 0) {
+		FRESULT rc = f_open(&f, "STM32.TXT", FA_WRITE);
+		if (rc == FR_OK) fs_ready = true;
+	}
 
 	char tx[] = "Hello World\n";
     while (1) {

@@ -58,21 +58,6 @@ int BSP_UARTx_transmit(uint8_t* buf, size_t n) {
     return HAL_UART_Transmit(&UartHandle, buf, n, 0xFFFF) == HAL_OK ? 0 : -1;
 }
 
-// Retargets the C library printf function to the USART.
-// int fputc(int ch, FILE *f) {
-//     if (ch == '\n') fputc('\r', f);
-//     return BSP_UARTx_transmit((uint8_t *)&ch, 1) == 0 ? ch : EOF;
-// }
-
-// int _write(int file, char *ptr, int len) {
-//     (void)file;
-//     return BSP_UARTx_transmit((uint8_t*)ptr, len) == 0 ? len : -1;
-// }
-//
-// int isatty(int file) {
-//     return 1;
-// }
-
 void BSP_UARTx_IRQHandler(void) {
     HAL_UART_IRQHandler(&UartHandle);
 }

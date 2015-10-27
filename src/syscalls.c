@@ -71,7 +71,7 @@ caddr_t _sbrk(int incr) {
 }
 
 int _write(int file, char *ptr, int len) {
-	if (isatty(file)) {
+	if (!isatty(file)) {
 		return BSP_UARTx_transmit((uint8_t*)ptr, len) == 0 ? len : 0;
 	}
 
