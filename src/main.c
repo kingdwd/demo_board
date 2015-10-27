@@ -4,9 +4,12 @@
 #include <sd_diskio.h>
 
 #include "BSP/devboard/devboard.h"
+#include "BSP/devboard/uart.h"
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	switch(GPIO_Pin) {
@@ -98,18 +101,26 @@ int main(void) {
 		HAL_Delay(250);
 	}
 
+	if (BSP_UART_init() != 0) {
+		BSP_LED_on(LED2);
+	}
+
 	FIL f;
 	FATFS fs;
 	bool fs_ready = false;
-	if (init_fatfs(&fs) == 0) {
-		FRESULT rc = f_open(&f, "STM32.TXT", FA_WRITE);
-		if (rc == FR_OK) fs_ready = true;
-	}
+	// if (init_fatfs(&fs) == 0) {
+	// 	FRESULT rc = f_open(&f, "STM32.TXT", FA_WRITE);
+	// 	if (rc == FR_OK) fs_ready = true;
+	// }
 
+	char tx[] = "Hello World\n";
     while (1) {
 		for (uint8_t i = 0; i < 0xF+1; i++) {
 			for (uint8_t j = 0; j < 0xF+1; j++) {
 				seven_seg_disp_num(i, j);
+				printf("%x, %x\n", i, j);
+				puts(tx);
+
 				HAL_Delay(100);
 
 				if(!fs_ready) {

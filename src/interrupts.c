@@ -1,6 +1,7 @@
 #include <stm32f4xx_hal.h>
 #include "BSP/devboard/devboard.h"
 #include "BSP/devboard/sd.h"
+#include "BSP/devboard/uart.h"
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Exceptions Handlers                         */
@@ -67,4 +68,8 @@ void DMA2_Stream6_IRQHandler(void) {
 
 void SDIO_IRQHandler(void) {
   BSP_SD_IRQHandler();
+}
+
+void USARTx_IRQHandler(void) {
+	BSP_UARTx_IRQHandler();
 }

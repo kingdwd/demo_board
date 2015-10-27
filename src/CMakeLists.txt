@@ -1,9 +1,11 @@
 set(SRC_FILES
 	main.c
 	interrupts.c
+	syscalls.c
 
 	BSP/devboard/devboard.c
 	BSP/devboard/sd.c
+	BSP/devboard/uart.c
 )
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
