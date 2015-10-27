@@ -35,12 +35,14 @@ void set_system_clock_168mhz(void) {
 	RCC_OscInitTypeDef RCC_OscInit = {
 		.OscillatorType = RCC_OSCILLATORTYPE_HSE,
 		.HSEState       = RCC_HSE_ON,
-		.PLL.PLLState   = RCC_PLL_ON,
-		.PLL.PLLSource  = RCC_PLLSOURCE_HSE,
-		.PLL.PLLM       = HSE_is_odd ? HSE_mhz : (HSE_mhz / 2), // should match HSE freq in mhz so HSE/PLLM == 1
-		.PLL.PLLN       = HSE_is_odd ? (168*2) : 168, // 336 / 2 == 168 == max core clk
-		.PLL.PLLP       = RCC_PLLP_DIV2, // ((HSE/pllm) * plln) / pllp == 168 (max core clk)
-		.PLL.PLLQ       = 7, // ((HSE/pllm) * plln) / pllq == 48 (USB needs 48 and sdio needs 48 or lower)
+		.PLL = {
+			.PLLState   = RCC_PLL_ON,
+			.PLLSource  = RCC_PLLSOURCE_HSE,
+			.PLLM       = HSE_is_odd ? HSE_mhz : (HSE_mhz / 2), // should match HSE freq in mhz so HSE/PLLM == 1
+			.PLLN       = HSE_is_odd ? (168*2) : 168, // 336 / 2 == 168 == max core clk
+			.PLLP       = RCC_PLLP_DIV2, // ((HSE/pllm) * plln) / pllp == 168 (max core clk)
+			.PLLQ       = 7, // ((HSE/pllm) * plln) / pllq == 48 (USB needs 48 and sdio needs 48 or lower)
+		},
 	};
 	if (HAL_RCC_OscConfig(&RCC_OscInit) != HAL_OK) {
 		while (1);

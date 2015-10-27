@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.8.8)
 
+include(CMakeForceCompiler)
+CMAKE_FORCE_C_COMPILER(arm-none-eabi-gcc GNU)
+
 set(CMAKE_SYSTEM_NAME Generic)
 
 project(DemoBoard C ASM)
@@ -8,7 +11,7 @@ set(gc_flags "-ffunction-sections -fdata-sections -Wl,--gc-sections") # These fl
 set(mcu_flags "-mcpu=cortex-m4 -mtune=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork")
 set(linker_flags "-Wl,-T${CMAKE_SOURCE_DIR}/STM32F407VE_FLASH.ld -Wl,-gc-sections -Wl,-LTO -nostdlib")
 
-set(WARNINGS "-Wall -Wpedantic -Wextra")
+set(WARNINGS "-Wall -Wextra")
 set(CFLAGS "-O0 -g -LTO -std=c99 ${WARNINGS} ${gc_flags} ${mcu_flags} ${linker_flags}")
 
 add_definitions(-DHSE_VALUE=24000000 -DSTM32F407xx)
@@ -16,9 +19,9 @@ add_definitions(-DHSE_VALUE=24000000 -DSTM32F407xx)
 set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
 link_libraries(c gcc) # because we compile with '-nostdlib' we have to link these manually
 
-set(FATFS_DIR ${CMAKE_SOURCE_DIR}/third_party/FATFS)
+set(FATFS_DIR ${CMAKE_SOURCE_DIR}/third_party/FatFs)
 set(CMSIS_DIR ${CMAKE_SOURCE_DIR}/third_party/CMSIS)
-set(STM32f4xx_HAL_Driver_DIR ${CMAKE_SOURCE_DIR}/third_party/STM32f4xx_HAL_Driver)
+set(STM32f4xx_HAL_Driver_DIR ${CMAKE_SOURCE_DIR}/third_party/STM32F4xx_HAL_Driver)
 
 include_directories(
     # The project source
