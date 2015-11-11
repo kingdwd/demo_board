@@ -2,6 +2,7 @@
 #include "BSP/devboard/devboard.h"
 #include "BSP/devboard/sd.h"
 #include "BSP/devboard/uart.h"
+#include "BSP/devboard/can.h"
 
 /******************************************************************************/
 /*            Cortex-M4 Processor Exceptions Handlers                         */
@@ -67,9 +68,33 @@ void DMA2_Stream6_IRQHandler(void) {
 
 
 void SDIO_IRQHandler(void) {
-  BSP_SD_IRQHandler();
+	BSP_SD_IRQHandler();
 }
 
 void USARTx_IRQHandler(void) {
 	BSP_UARTx_IRQHandler();
+}
+
+void CAN1_RX0_IRQHandler(void) {
+	BSP_can_irq_callback();
+}
+
+void CAN2_RX0_IRQHandler(void) {
+    BSP_can_irq_callback();
+}
+
+void CAN1_RX1_IRQHandler(void) {
+	BSP_can_irq_callback();
+}
+
+void CAN2_RX1_IRQHandler(void) {
+	BSP_can_irq_callback();
+}
+
+void CAN1_TX_IRQHandler(void) {
+	BSP_can_irq_callback();
+}
+
+void CAN2_TX_IRQHandler(void) {
+	BSP_can_irq_callback();
 }

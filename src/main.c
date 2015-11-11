@@ -5,6 +5,7 @@
 
 #include "BSP/devboard/devboard.h"
 #include "BSP/devboard/uart.h"
+#include "BSP/devboard/can.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -115,13 +116,17 @@ int main(void) {
 		if (rc == FR_OK) fs_ready = true;
 	}
 
+	BSP_can_init();
+
 	char tx[] = "Hello World\n";
     while (1) {
 		for (uint8_t i = 0; i < 0xF+1; i++) {
 			for (uint8_t j = 0; j < 0xF+1; j++) {
-				seven_seg_disp_num(i, j);
+				// seven_seg_disp_num(i, j);
 				printf("%x, %x\n", i, j);
 				puts(tx);
+
+				can_send_hello();
 
 				HAL_Delay(100);
 

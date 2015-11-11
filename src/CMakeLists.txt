@@ -6,6 +6,7 @@ set(SRC_FILES
 	BSP/devboard/devboard.c
 	BSP/devboard/sd.c
 	BSP/devboard/uart.c
+	BSP/devboard/can.c
 )
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
