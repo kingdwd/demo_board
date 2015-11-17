@@ -112,7 +112,8 @@ int main(void) {
 	FATFS fs;
 	bool fs_ready = false;
 	if (init_fatfs(&fs) == 0) {
-		FRESULT rc = f_open(&f, "STM32.TXT", FA_WRITE);
+		FRESULT rc = f_open(&f, "STM32.TXT", FA_WRITE|FA_CREATE_ALWAYS);
+		printf("rc=%u  rc==FR_OK=%d\n", rc, rc==FR_OK);
 		if (rc == FR_OK) fs_ready = true;
 	}
 
@@ -122,7 +123,7 @@ int main(void) {
     while (1) {
 		for (uint8_t i = 0; i < 0xF+1; i++) {
 			for (uint8_t j = 0; j < 0xF+1; j++) {
-				// seven_seg_disp_num(i, j);
+				seven_seg_disp_num(i, j);
 				printf("%x, %x\n", i, j);
 				puts(tx);
 
@@ -133,8 +134,15 @@ int main(void) {
 				if(!fs_ready) {
 					BSP_LED_toggle(LED1);
 				} else {
-					f_printf(&f, "i=%x, j=%x\n", i, j);
+					char buf[64] = {'\0'};
+					sprintf(buf, "i=%x, j=%x\n", i, j);
+
+					unsigned bw;
+					FRESULT rc = f_write(&f, buf, 64, &bw);
+
+					printf("rc=%d bw=%u\n", rc, bw);
 				}
+				f_sync(&f);
 			}
 		}
 	}
