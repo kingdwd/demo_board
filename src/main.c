@@ -116,20 +116,36 @@ int main(void) {
 		printf("rc=%u  rc==FR_OK=%d\n", rc, rc==FR_OK);
 		if (rc == FR_OK) fs_ready = true;
 	}
-
-	BSP_can_init();
+	if (BSP_can_init() != 0) {
+		BSP_LED_on(LED5);
+	}
 
 	char tx[] = "Hello World\n";
     while (1) {
 		for (uint8_t i = 0; i < 0xF+1; i++) {
 			for (uint8_t j = 0; j < 0xF+1; j++) {
 				seven_seg_disp_num(i, j);
-				printf("%x, %x\n", i, j);
-				puts(tx);
+				// printf("%x, %x\n", i, j);
+				// puts(tx);
 
-				can_send_hello();
+				HAL_Delay(100*10);
+				int can_rc = 0;
 
-				HAL_Delay(100);
+				// can_rc = can_send_hello();
+				if (can_rc != 0) {
+					printf("CAN tx ERR: %d\n", can_rc);
+				}
+
+
+				can_rc = can_recv_test();
+				if (can_rc != 0) {
+					printf("CAN ERR %d\n", can_rc);
+					can_print_err();
+					BSP_LED_toggle(LED4);
+				} else {
+					printf("CAN recv SUCCESS!\n");
+				}
+
 
 				if(!fs_ready) {
 					BSP_LED_toggle(LED1);
@@ -139,11 +155,28 @@ int main(void) {
 
 					unsigned bw;
 					FRESULT rc = f_write(&f, buf, 64, &bw);
+					if (rc != FR_OK) fs_ready = false;
 
 					printf("rc=%d bw=%u\n", rc, bw);
+					f_sync(&f);
 				}
-				f_sync(&f);
 			}
 		}
 	}
+}
+
+
+void HAL_CAN_TxCpltCallback (CAN_HandleTypeDef *hcan) {
+	printf("HAL_CAN_TxCpltCallback\n");
+	can_print(hcan);
+}
+
+void HAL_CAN_RxCpltCallback (CAN_HandleTypeDef *hcan) {
+	printf("HAL_CAN_RxCpltCallback\n");
+	can_print(hcan);
+}
+
+void HAL_CAN_ErrorCallback (CAN_HandleTypeDef *hcan) {
+	printf("HAL_CAN_ErrorCallback\n");
+	can_print(hcan);
 }
