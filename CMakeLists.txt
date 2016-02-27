@@ -9,7 +9,7 @@ project(DemoBoard C ASM)
 
 set(gc_flags "-ffunction-sections -fdata-sections -Wl,--gc-sections") # These flags helps with dead code elimination. More info can found at http://stackoverflow.com/a/10809541
 set(mcu_flags "-mcpu=cortex-m4 -mtune=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork")
-set(linker_flags "-Wl,-T${CMAKE_SOURCE_DIR}/STM32F407VE_FLASH.ld -Wl,-gc-sections -Wl,-LTO -nostdlib")
+set(linker_flags "-Wl,-T${CMAKE_SOURCE_DIR}/STM32F407VE_FLASH.ld -Wl,-gc-sections -Wl,-LTO -nostartfiles")
 
 set(WARNINGS "-Wall -Wextra")
 set(CFLAGS "-O0 -g -LTO -std=c99 ${WARNINGS} ${gc_flags} ${mcu_flags} ${linker_flags}")
@@ -17,7 +17,6 @@ set(CFLAGS "-O0 -g -LTO -std=c99 ${WARNINGS} ${gc_flags} ${mcu_flags} ${linker_f
 add_definitions(-DHSE_VALUE=24000000 -DSTM32F407xx)
 
 set(CMAKE_C_FLAGS "${CFLAGS} ${CMAKE_C_FLAGS}")
-link_libraries(c gcc) # because we compile with '-nostdlib' we have to link these manually
 
 set(FATFS_DIR ${CMAKE_SOURCE_DIR}/third_party/FatFs)
 set(CMSIS_DIR ${CMAKE_SOURCE_DIR}/third_party/CMSIS)
